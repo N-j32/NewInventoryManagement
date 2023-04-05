@@ -1,0 +1,484 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h3 style="color:darkmagenta;text-align:center">Inventory System</h3>
+<br />
+
+<div class="container" style="max-width:690px;">
+    <div class="containerfirst" id="divfirst" style="background-color: gainsboro">
+        <div class="master">
+
+            <table>
+                <tr>
+
+                    <td>Order Date</td>
+                    <td>
+                        <input type="text" class="form-control col-sm-7" id="orderDate" asp-format="{0:dd/MM/yyyy}" />
+                        <span class="error">Valid order date required (ex. MM-dd-yyyy)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Supplier</td>
+                    <td colspan="3">
+                        @Html.DropDownList("SupplierList", ViewBag.supplierList as SelectList, "Select Supplier", new { @id = "supplier", @class = "form-control col-sm-7" })
+                        <span class="error">Supplier required</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="details">
+            <h4 style="color:darkmagenta">Order Items</h4>
+            <table width="100%">
+                <tr>
+                    <td>Item</td>
+                    <td>Quantity</td>
+                    <td>Rate</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" id="itemName" class="form-control col-sm-11" />
+
+                        @*@Html.DropDownList("ProductList", ViewBag.productList as SelectList, " Select Product ", new { @id = "itemName", @class = "itemName" })*@
+                        <span class="error">Item name required</span>
+                    </td>
+                    <td>
+                        <input type="text" id="quantity" class="form-control col-sm-11" />
+                        <span class="error">Valid quantity required</span>
+                    </td>
+                    <td>
+                        <input type="text" id="rate" class="form-control col-sm-11" />
+                        <span class="error">Valid rate required</span>
+                    </td>
+
+                    <td>
+                        <input type="submit" class="btn btn-primary btn-sm btn-block col-sm-12 " id="add" value="Move" style="border-radius:3px;padding:7px 15px" />
+                    </td>
+                    <td>
+                        @*<input class="btn btn-primary" type="submit" value="Submit">*@
+                        <input type="submit" class="btn btn-secondary btn-sm btn-block col-sm-12" id="reset" value="Clear" style="border-radius:3px;padding:7px 15px" />
+                    </td>
+                    <td>
+                        <input type="hidden" id="productId">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <hr />
+    <div class="containersecond" style="background-color: gainsboro">
+        <div id="orderItems" class="tablecontainer" style="background-color:darkgray">
+            <table class="table table-dark" id="orderdetailsItems">
+                <thead>
+                    <tr>
+                        <th style="width:30%">Item</th>
+                        <th style="width:20%">Quantity</th>
+                        <th style="width:15%">Rate</th>
+                        <th style="width:25%">Total Amount</th>
+                        <th style="width:10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+
+        </div>
+        <div style="padding:10px 0px; text-align:right">
+            <label style="color:darkblue;">Grand Total : <label id="lblGrandTotal" style="color: darkblue;"></label></label>
+            <input id="submit" type="button" class="btn btn-primary btn-sm" value="Save" style="padding:7px 20px;" />
+            <input id="remove" type="button" class="btn btn-secondary btn-sm" value="Clear" style="padding:7px 15px;" />
+        </div>
+
+    </div>
+
+    <hr /><br />
+    @*order table*@
+    <div id="orderItems1" class="tablecontainer" style="background-color:darkgray">
+        <table class="table table-dark" id="orderdetailsItems1">
+            <thead>
+                <tr>
+                    <th style="width:15%">OrderId</th>
+                    <th style="width:20%">Order Date</th>
+                    <th style="width:30%">Supplier Name</th>
+                    <th style="width:20%">Grand Amount</th>
+                    <th style="width:15%">Action</th>
+                </tr>
+            </thead>
+
+        </table>
+
+
+    </div>
+</div>
+<input id="autocomplete">
+
+<link rel="stylesheet" href="~/css/Form.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script type="text/javascript" src="~/bootstrap-toaster/js/bootstrap-toaster.min.js"></script>
+
+
+@section Scripts{
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#orderDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#orderDate').datepicker('setDate', new Date());
+        });
+
+        //reset form
+        $(document).ready(function () {
+
+            $("#reset").click(function () {
+                $(this).closest('table').find("input[type=text], textarea").val("");
+            });
+        });
+        //$(document).ready(function () {
+
+        //    $("#remove").click(function () {
+        //        $('#orderdetailsItems').find('tbody').detach();
+        //    });
+        //});
+        //reset grid
+        //$("#orderdetailsItems").on('click', '#remove', function () {
+        //    $(this).closest('tr').remove();
+        //});
+
+        $(document).ready(function () {
+            GrandTotal=0
+            $('#remove').click(function () {
+                $("#orderItems").find("tr:gt(0)").remove();
+                $("#lblGrandTotal").html(GrandTotal);
+                location.reload();
+
+            });
+        });
+
+
+        $(function () {
+            $("#autocomplete").autocomplete({
+                source: function (req, res) {
+                    $.ajax({
+                        url: "/Form/AutoComplete",
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(data)
+                            res(data);
+                        }
+                    })
+                }
+            });
+        });
+
+
+        $(document).ready(function () {
+
+            $("#itemName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Form/AutoComplete", type: "POST", dataType: "json",
+                        data: { id: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.ProductId };
+                            }));
+                        }
+                    });
+                },
+                minLength:3,
+                select: function (event, ui) {
+                    $("#productId").val(ui.item.value);
+                    $("#itemName").val(ui.item.label);
+                    return false;
+                }
+            });
+
+
+        });
+        $(document).ready(function () {
+            var orderItems = [];
+            var orderItems1 = [];
+            //Add button click function
+            $('#add').click(function () {
+                //Check validation of order item
+                var isValidItem = true;
+                if ($('#itemName').val().trim() == '') {
+                    isValidItem = false;
+                    $('#itemName').siblings('span.error').css('visibility', 'visible');
+                }
+                else {
+                    $('#itemName').siblings('span.error').css('visibility', 'hidden');
+                }
+
+                if (!($('#quantity').val().trim() != '' && !isNaN($('#quantity').val().trim()))) {
+                    isValidItem = false;
+                    $('#quantity').siblings('span.error').css('visibility', 'visible');
+                }
+                else {
+                    $('#quantity').siblings('span.error').css('visibility', 'hidden');
+                }
+
+                if (!($('#rate').val().trim() != '' && !isNaN($('#rate').val().trim()))) {
+                    isValidItem = false;
+                    $('#rate').siblings('span.error').css('visibility', 'visible');
+                }
+                else {
+                    $('#rate').siblings('span.error').css('visibility', 'hidden');
+                }
+
+
+                //Add item to list if valid
+                if (isValidItem) {
+                    orderItems.push({
+                        Product: $('#itemName').val().trim(),
+                        Quantity: parseInt($('#quantity').val().trim()),
+                        Rate: parseFloat($('#rate').val().trim()),
+                        TotalAmount: parseInt($('#quantity').val().trim()) * parseFloat($('#rate').val().trim()),
+
+
+                    });
+
+
+
+
+                    //Clear fields
+                    $('#itemName').val('').focus();
+                    $('#quantity,#rate').val('');
+
+                }
+
+                //order
+
+
+
+
+                //populate order items
+                GeneratedItemsTable();
+                //populate order items
+
+
+
+
+
+            });
+            //Save button click function
+            $('#submit').click(function () {
+                //validation of order
+                var isAllValid = true;
+                if (orderItems.length == 0) {
+                    $('#orderItems').html('<span style="color:red;">Please add order items</span>');
+                    isAllValid = false;
+                }
+
+
+
+                if ($('#orderDate').val().trim() == '') {
+                    $('#orderDate').siblings('span.error').css('visibility', 'visible');
+                    isAllValid = false;
+                }
+                else {
+                    $('#orderDate').siblings('span.error').css('visibility', 'hidden');
+                }
+
+
+
+                //Save if valid
+                if (isAllValid) {
+                    var data = {
+
+                        OrderDate: $('#orderDate').val().trim(),
+                        SupplierId: $('#supplier').val(),
+                        GrandTotal: $('#lblGrandTotal').text(),
+                        ProductId:$('#productId').val(),
+                        OrderDetails: orderItems,
+
+                    }
+
+                    $(this).val('Please wait...');
+
+                    //$.ajax(
+                    //         {
+                    //             type: 'POST',
+                    //             dataType: 'JSON',
+                    //             url: '/Form/GetData',
+                    //             data: { jsonInput: JSON.stringify(data) },
+                    //             success:
+                    //                 function (response) {
+                    //                     // Generate HTML table.  
+                    //                     convertJsonToHtmlTable(JSON.parse(response), $("#TableId"));
+                    //                 },
+                    //             error:
+                    //                 function (response) {
+                    //                     alert("Error: " + response);
+                    //                 }
+                    //    });
+                    // $.ajax({
+
+
+
+                    //     type: 'POST',
+                    //     dataType: 'JSON',
+                    //     url: '/Form/test',
+                    //     data: data,
+                    //     contentType: 'application/x-www-form-urlencoded',
+                    //     success: function (d) {
+                    //         //check is successfully save to database
+                    //         if (d.status == true) {
+                    //             //will send status from server side
+                    //             alert('Successfully done.');
+                    //             //clear form
+                    //             orderItems = [];
+
+
+
+                    //             $('#orderDate').val('');
+                    //             $('#orderItems').empty();
+                    //         }
+                    //         else {
+                    //             alert('Failed');
+                    //         }
+                    //         $('#submit').val('Save');
+                    //     },
+                    //     error: function () {
+                    //         alert('Error. Please try again.');
+                    //         $('#submit').val('Save');
+                    //     }
+                    // });
+
+
+
+
+                    $.ajax({
+
+                        type: 'POST',
+                        dataType: 'JSON',
+                        url: '/Form/SaveOrder',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (d) {
+
+
+                            //check is successfully save to database
+                            if (d.status == true || d.response==success) {
+                                //alert(d);
+                                //will send status from server side
+                                //alert('Successfully done.');
+                                @*if(@TempData["message"] == "Added"){
+                                    toastr.success('Successfully saved');
+                                }
+                                else{ }*@
+                                /* $("#orderdetailsItems")[0].reset();*/
+                                alert(d.responseText);
+                                orderItems = [];
+
+
+
+                                GrandTotal = '';
+                                //$('#orderDate').val('');
+                                $('#orderItems').val('');
+
+
+
+
+
+                            }
+                            else {
+                                /*alert('Failed');*/
+                                alert(d.responseText);
+                            }
+                            $('#submit').val('Save');
+
+                        },
+                        error: function (d) {
+                            alert('Error');
+                           // alert('Error. Please try again.');
+                            //setTimeout("$('#success').dialog('close');", 3000);
+                            //$('#orderdetailsItems"').msgpopup({
+                            //    text: 'Error. Please try again.',
+                            //});
+                            $('#submit').val('Save');
+                        }
+                    });
+
+
+                }
+
+
+            });
+
+
+
+
+
+            function GeneratedItemsTable() {
+
+                if (orderItems.length >= 0) {
+                    var $table = $('<table/>');
+                    $table.append('<thead><tr><th>Item</th><th>Quantity</th><th>Rate</th><th>Total Amount</th><th>Action</th></tr></thead>');
+
+                    var $tbody = $('<tbody/>');
+                    var GrandTotal = 0;
+
+                    $.each(orderItems, function (i, val) {
+                        var $row = $('<tr/>');
+                        $row.append($('<td/>').html(val.Product));
+                        $row.append($('<td/>').html(val.Quantity));
+                        $row.append($('<td/>').html(val.Rate));
+                        $row.append($('<td/>').html(val.TotalAmount));
+
+                        GrandTotal += val.TotalAmount;
+
+                        var $remove = $('<a href="#">Remove</a>');
+                        $remove.click(function (e) {
+                            e.preventDefault();
+                            orderItems.splice(i, 1);
+                            GeneratedItemsTable();
+
+
+                        });
+                        $row.append($('<td/>').html($remove));
+                        $tbody.append($row);
+                    });
+
+                    $('#lblGrandTotal').html(GrandTotal.toFixed(2));
+                    console.log("current", orderItems);
+
+                    $table.append($tbody);
+                    $('#orderItems').html($table);
+
+
+                }
+
+                else {
+                    $('#orderItems').html('');
+
+                }
+
+            }
+
+            //order
+
+
+
+
+
+
+
+        });
+
+
+    </script>
+
+
+
+}
+

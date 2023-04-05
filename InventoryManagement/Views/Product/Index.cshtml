@@ -1,0 +1,162 @@
+﻿@model IEnumerable<InventoryManagement.Models.Product>
+
+    @{
+    ViewData["Title"] = "Index";
+    PagerModel pager = ViewBag.Pager;
+    }
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" />
+    <div class="container-fluid btn-group">
+        <div class="col-10">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+        <div class="col-2 justify-content-end">
+            <p>
+                <a asp-action="Create" class="btn btn-success">Create New</a>
+            </p>
+        </div>
+    </div>
+    <br />
+    <br />
+    <form asp-action="Index">
+        <div class="row">
+            <div class="col">
+                <input type="text" name="searchString" placeholder="Name" class="form-control-sm col-10" />
+            </div>
+            <div class="col">
+                <input type="number" name="minPrice" step="1" placeholder="min price" class="form-control-sm col-10" />
+            </div>
+            <div class="col">
+                <input type="number" name="maxPrice" step="1" placeholder="max price" class="form-control-sm col-10" />
+            </div>
+            <div class="col">
+                <input type="text" name="searchBrand" placeholder="Brand" class="form-control-sm col-10" />
+            </div>
+            <div class="col">
+                <input type="text" name="searchUnit" placeholder="Unit" class="form-control-sm col-10" />
+
+            </div>
+            <div class="col">
+                <input type="submit" value="Search" class="btn btn-primary btn-sm col-5" />&nbsp;&nbsp;
+
+                <a asp-action="Index" class="btn btn-secondary btn-sm col-5">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <br />
+
+    <table class="table">
+        <thead style="background-color:cadetblue">
+            <tr>
+                <th>
+                    <i class="@ViewData["SortIconDesc"]" arial-hidden=true></i>
+                    <a asp-action="Index" asp-route-sortExpression="@ViewData["SortParamDesc"]">
+                        @Html.DisplayNameFor(model => model.Code)
+                    </a>
+                </th>
+                <th>
+                    <i class="@ViewData["SortIconName"]" arial-hidden=true></i>
+                    <a asp-action="Index" asp-route-sortExpression="@ViewData["SortParamName"]">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </a>
+                </th>
+                <th>
+
+
+                    @Html.DisplayNameFor(model => model.Description)
+
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Cost)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UnitId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BrandId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryId)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Units.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brands.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Categories.Name)
+                </td>
+                <td>
+
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+
+
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+
+
+
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+
+
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @*pager*@
+
+    <div class="row">
+        <div class="col-12">
+            <partial name="_topBarProduct" model="@pager" />
+        </div>
+    </div>
+    <link href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    @section Scripts{
+
+        <script src="//code.jquery.com/jquery-1.12.3.js"></script>
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+        <script type="text/javascript">
+    function openSuccessModal(strMessage) {
+        var myDiv = document.getElementById("MyModalSuccessAlertBody");
+        myDiv.innerHTML = strMessage;
+        $("#myModalSuccess").modal('show');
+    }
+    $(document).ready
+        (function () {
+            var msg ="@TempData["SuccessMessage"]";
+            if(msg){
+                openSuccessModal(msg);
+            }
+        })
+        </script>
+
+
+
+
+    }

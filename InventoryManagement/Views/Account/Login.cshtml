@@ -1,0 +1,69 @@
+﻿@model InventoryManagement.Models.ViewModel.LoginSignUpViewModel;
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<h1>Login</h1>
+<h3 class="text-success text-center">@TempData["successMessage"]</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-primary rounded pl-5 pr-5 pb-5">
+            <form method="post" asp-action="Login">
+
+                <div class="form-group">
+                    <label asp-for="Username"></label>
+
+                    <input type="text" asp-for="Username" placeholder="Enter Username" id="usernames" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <h5 id="usercheck" style="color: red;">
+                        **Username is missing
+                    </h5>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input id="password" type="password" asp-for="Password" placeholder="Enter password" class="form-control" />
+                    <i id="open" class="fa fa-eye float-right" style="margin-top: -25px; margin-right: 6px; display: none; cursor: pointer"></i>
+                    <i id="closed" class="fa fa-eye-slash float-right" style="margin-top: -25px; margin-right: 6px; display: none; cursor: pointer"></i>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <h5 id="passcheck" style="color: red;">
+                        **Please Fill the password
+                    </h5>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" id="submitbtn" class="btn btn-success btn-lg" value="Login" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/signupApp.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#open").click(function () {
+            $("#open").hide();
+            $("#closed").show();
+            $("#password").attr("type", "text");
+        });
+        $("#closed").click(function () {
+            $("#closed").hide();
+            $("#open").show();
+            $("#password").attr("type", "text");
+        });
+
+
+    });
+
+
+
+
+
+</script>

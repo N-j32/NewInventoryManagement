@@ -1,0 +1,43 @@
+﻿
+
+/*css for error*/
+span.error {
+    display: block;
+    visibility: hidden;
+    color: red;
+    font-size: 90%;
+}
+
+
+/*css for table*/
+.container td {
+    vertical-align: top;
+}
+
+.tablecontainer table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid #BFAEAE;
+    border-right: 1px solid #BFAEAE;
+}
+
+.tablecontainer th {
+    border-bottom: 2px solid #BFAEAE !important;
+}
+
+.tablecontainer th, .tablecontainer td {
+    text-align: left;
+    border-left: 1px solid #BFAEAE;
+    padding: 5px;
+    border-bottom: 1px solid #BFAEAE;
+}
+
+.ui-widget {
+    font-size: 12px !important;
+}
+
+.containerfirst {
+    border-style: solid;
+    border-width: thin;
+    border-color: #FFFFFF;
+}

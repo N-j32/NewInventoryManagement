@@ -1,0 +1,73 @@
+﻿@model InventoryManagement.Models.ViewModel.SignUpUserViewModel;
+@{
+    ViewData["Title"] = "SignUp";
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+}
+
+<h1>SignUp</h1>
+<h3 class="text-danger text-center">@TempData["errorMessage"]</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-primary rounded pl-5 pr-5 pb-5">
+
+            <form method="post" asp-action="SignUp">
+
+                <div class="form-group">
+                    <label asp-for="Username"></label>
+                    <input type="text" asp-for="Username" placeholder="Enter username" class="form-control" id="username" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <h6 id="usercheck" class="text-danger">
+                        **Username is missing
+                    </h6>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input type="email" asp-for="Email" placeholder="Enter Email" class="form-control" id="email" />
+                    <span asp-validation-for="Email" class="text-danger" ></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input type="password" asp-for="Password" placeholder="Enter password" class="form-control" id="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <h6 id="passcheck" class="text-danger">
+                        **Please Fill the password
+                    </h6>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input type="password" asp-for="ConfirmPassword" placeholder="Enter Confirmpassword" class="form-control" id="conpassword" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    <h6 id="conpasscheck" class="text-danger">
+                        **Password didn't match
+                    </h6>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mobile"></label>
+                    <input type="text" asp-for="Mobile" placeholder="Enter Mobile Number" class="form-control" id="num" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                    <h6 id="numcheck" class="text-danger ">
+                    </h6>
+                </div>
+
+                <div>
+                    <input type="checkbox" checked="checked" asp-for="IsActive" />
+                    <label asp-for="IsActive"></label>
+
+
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="submitbtn" class="btn btn-success btn-lg" value="Register" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/signupApp.js"></script>

@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+}
+
+<div class="container">
+    <div class="master">
+
+        <table>
+            <tr>
+
+                <td>Order Date</td>
+                <td>
+                    <input type="text" id="orderDate" />
+                    <span class="error">Valid order date required (ex. MM-dd-yyyy)</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Supplier</td>
+                <td colspan="3">
+                    @Html.DropDownList("SupplierList", ViewBag.supplierList as SelectList, "Select Supplier", new { @id = "supplier", @class = "myclass" })
+                    <span class="error">Supplier required</span>
+                </td>
+            </tr>
+           
+            
+        </table>
+    </div>
+    <div class="details">
+        <table class="table table-responsive">
+            <tr>
+                <td>Product</td>
+                <td>Rate</td>
+                <td>Quantity</td>
+                <td>Total</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="mycontainer" id="mainrow">
+                <td><input type="text" id="product" class=product form-control" /></td>
+                <td><input type="text" id="rate" class="rate form-control" onkeyup="CalculateTotal(this)" /></td>
+                <td><input type="text" id="quantity" class="quantity form-control" onkeyup="CalculateTotal(this)" /></td>
+                <td><input type="text" id="total" class="total form-control" /></td>
+                <td><input type="button" id="add" value="Add" class="btn btn-success" /></td>
+            </tr>
+        </table>
+        <hr />
+        <div id="orderItems">
+            <table class="table table-responsive" id="orderdetailsItems">
+            </table>
+            <span>Grand Total : <span id="lblGrandTotal"></span></span>
+        </div>
+
+        <div style="padding:10px 0px; text-align:right">
+            <input id="submit" type="button" value="Save" style="padding:10px 20px;background:forestgreen;border-radius:10px;border-radius:10px;" />
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //Add button click event
+        $('#add').click(function () {
+
+
+            //Check validation of order item
+           
+            if ($('#itemName').val().trim() == '') {
+                isValidItem = false;
+                $('#itemName').siblings('span.error').css('visibility', 'visible');
+            }
+            else {
+                $('#itemName').siblings('span.error').css('visibility', 'hidden');
+            }
+
+            if (!($('#quantity').val().trim() != '' && !isNaN($('#quantity').val().trim()))) {
+                isValidItem = false;
+                $('#quantity').siblings('span.error').css('visibility', 'visible');
+            }
+            else {
+                $('#quantity').siblings('span.error').css('visibility', 'hidden');
+            }
+
+            if (!($('#rate').val().trim() != '' && !isNaN($('#rate').val().trim()))) {
+                isValidItem = false;
+                $('#rate').siblings('span.error').css('visibility', 'visible');
+            }
+            else {
+                $('#rate').siblings('span.error').css('visibility', 'hidden');
+            }
+
+            var $newRow = $('#mainrow').clone().removeAttr('id');
+            $('#product,#quantity,#total,#rate,#add', $newRow).removeAttr('id');
+            $('#orderdetailsItems').append($newRow);
+            $('#product,#quantity,#rate,#total').val('');
+            CalculateGrandTotal();
+        });
+    });
+    function CalculateTotal(ele) {
+        var product = $(ele).closest('tr').find('.product').val();
+        var rate = $(ele).closest('tr').find('.rate').val();
+        var quantity = $(ele).closest('tr').find('.quantity').val();
+        rate = rate == '' ? 0 : rate;
+        quantity = quantity == '' ? 0 : quantity;
+        if (!isNaN(rate) && !isNaN(quantity)) {
+            var total = parseFloat(rate) * parseFloat(quantity);
+            $(ele).closest('tr').find('.total').val(total.toFixed(2));
+        }
+        CalculateGrandTotal();
+    }
+    function CalculateGrandTotal() {
+        var grandTotal = 0;
+        $.each($('#orderdetailsItems').find('.total'), function () {
+            if ($(this).val() != '' && !isNaN($(this).val())) {
+                grandTotal += parseFloat($(this).val());
+            }
+        });
+        $('#lblGrandTotal').html(grandTotal.toFixed(2));
+
+
+
+        //Save button click function
+        $('#submit').click(function () {
+            //validation of order
+            var isAllValid = true;
+            //if (orderItems.length == 0) {
+            //    $('#orderItems').html('<span style="color:red;">Please add order items</span>');
+            //    isAllValid = false;
+            //}
+
+
+
+            if ($('#orderDate').val().trim() == '') {
+                $('#orderDate').siblings('span.error').css('visibility', 'visible');
+                isAllValid = false;
+            }
+            else {
+                $('#orderDate').siblings('span.error').css('visibility', 'hidden');
+            }
+
+
+
+            //Save if valid
+            if (isAllValid) {
+                var data = {
+
+                    OrderDate: $('#orderDate').val().trim(),
+                    SupplierId: $('#supplier').val(),
+                    OrderDetails: orderItems
+                }
+
+                $(this).val('Please wait...');
+
+                $.ajax({
+                    url: '/Inline/SaveOrder',
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json",
+                    success: function (value) {
+                        //check is successfully save to database
+                        if (value.status == true) {
+                            //will send status from server side
+                            alert('Successfully done.');
+                            //clear form
+                            orderItems = [];
+
+                            $('#orderDate').val('');
+                            $('#orderItems').empty();
+                        }
+                        else {
+                            alert('Failed');
+                        }
+                        $('#submit').val('Save');
+                    },
+                    error: function () {
+                        alert('Error. Please try again.');
+                        $('#submit').val('Save');
+                    }
+                });
+            }
+
+
+        });
+    }
+</script>
+

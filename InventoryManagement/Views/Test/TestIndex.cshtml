@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+
+<input id="automplete">
+
+
+
+<script>
+
+    $(function () {
+        $("#automplete").autocomplete({
+            source: function (req, res) {
+                $.ajax({
+                    url: "/Form/AutoComplete",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        res(data);
+                    }
+                })
+            }
+        });
+    });
+
+</script>

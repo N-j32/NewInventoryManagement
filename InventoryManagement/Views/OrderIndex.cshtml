@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="containersecond" style="background-color: gainsboro">
+    <div id="orderItems" class="tablecontainer" style="background-color:darkgray">
+        <table class="table table-dark" id="orderdetailsItems">
+            <thead>
+                <tr>
+                    <th style="width:15%">OrderId</th>
+                    <th style="width:20%">Date</th>
+                    <th style="width:30%">Supplier</th>
+                    <th style="width:25%">GrandTotal</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+
+    </div>
+    <div style="padding:10px 0px; text-align:right">
+        <label style="color:darkblue;">Grand Total : <label id="lblGrandTotal" style="color: darkblue;"></label></label>
+        <input id="submit" type="button" class="btn btn-primary btn-sm" value="Save" style="padding:7px 20px;" />
+        <input id="remove" type="button" class="btn btn-secondary btn-sm" value="Clear" style="padding:7px 15px;" />
+    </div>
+</div>
